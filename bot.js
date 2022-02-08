@@ -63,7 +63,7 @@ client.on("message", msg => {
         if (runningGames.hasOwnProperty(channelID)) {
             const guessArray = msg.content.split(' ');
             if (guessArray.length > 1) {
-                const guess = guessArray[1];
+                const guess = guessArray[1].toUpperCase();
                 if (guess) {
                     if (guess === "DYLAN") {
                         msg.channel.send(`:tada: You guessed the creator! The repo is: <https://github.com/vu-dylan/Discordle> :tada:`);
