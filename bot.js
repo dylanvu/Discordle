@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import Discord from "discord.js"
 import express from 'express'
-
+import cron from 'cron'
 import { GetMessageIDs } from './util/discord.js';
 import { formatGuess, generateHotWord, checkIfvalid } from './util/wordle.js'
 
@@ -26,6 +26,16 @@ const BOT_TOKEN = process.env.BOT_TOKEN;
 
 let runningGames = {};
 
+// Schedule daily cleaning using cron
+// 0 0 9 * * * means 9:00 AM exactly
+const cleanJob = new cron.CronJob('0 0 9 * * *', () => {
+    console.log("Cleaning");
+    runningGames = {};
+
+}, null, true, 'America/Los_Angeles');
+
+cleanJob.start();
+
 const totalGuesses = 6;
 
 client.on("ready", () => {
@@ -42,7 +52,7 @@ client.on("message", msg => {
         // Save the channel ID as the key with values {guesses: number, hotword: string}
         runningGames[channelID] = { guesses: 0, hotWord: hotWord };
         console.log(runningGames);
-        msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \n Use !guess (yourGuess) to guess`)
+        msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \n Use !guess (yourGuess) to guess.`)
     } else if (!msg.author.bot && msg.content.toLowerCase().includes("!guess")) {
         // Check to see if game is in session
         let [channelID, _] = GetMessageIDs(msg);

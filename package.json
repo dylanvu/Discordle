@@ -20,6 +20,7 @@
   "homepage": "https://github.com/vu-dylan/Discordle#readme",
   "dependencies": {
     "chalk": "^5.0.0",
+    "cron": "^1.8.2",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.2"
