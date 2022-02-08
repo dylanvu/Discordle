@@ -45,14 +45,18 @@ client.on("ready", () => {
 client.on("message", msg => {
     // check if message is from waifu bot
     if (msg.content === "!wordle") {
-        let [channelID, _] = GetMessageIDs(msg)
-        // generate a random word
-        let hotWord = generateHotWord();
-        console.log(hotWord)
-        // Save the channel ID as the key with values {guesses: number, hotword: string}
-        runningGames[channelID] = { guesses: 0, hotWord: hotWord };
-        console.log(runningGames);
-        msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \n Use !guess (yourGuess) to guess.`)
+        let [channelID, _] = GetMessageIDs(msg);
+        if (runningGames.hasOwnProperty(channelID)) {
+            msg.channel.send("There's already a Wordle game started.");
+        } else {
+            // generate a random word
+            let hotWord = generateHotWord();
+            console.log(hotWord)
+            // Save the channel ID as the key with values {guesses: number, hotword: string}
+            runningGames[channelID] = { guesses: 0, hotWord: hotWord };
+            console.log(runningGames);
+            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \n Use !guess (yourGuess) to guess.`)
+        }
     } else if (!msg.author.bot && msg.content.toLowerCase().includes("!guess")) {
         // Check to see if game is in session
         let [channelID, _] = GetMessageIDs(msg);
@@ -72,7 +76,7 @@ client.on("message", msg => {
                             const result = formatGuess(guess, channelHotWord);
                             msg.channel.send(result + `\n\nThere are ${totalGuesses - runningGames[channelID].guesses} guesses left.`);
                             if (runningGames[channelID].guesses >= totalGuesses) {
-                                msg.channel.send(`There are no guesses left. The word was: ${channelHotWord}`);
+                                msg.channel.send(`There are no guesses left. The word was: ${channelHotWord}.`);
                                 delete runningGames[channelID];
                             }
                         }
@@ -80,7 +84,7 @@ client.on("message", msg => {
                         if (guess.length !== 5) {
                             msg.channel.send("Your guess isn't five letters, my friend.");
                         } else {
-                            msg.channel.send("I couldn't recognize that word. Are you sure that's a real word? \n\n (Or maybe I'm just dumb since I only know about 3000 five letter words.)");
+                            msg.channel.send("I couldn't recognize that word. Are you sure that's a real word? \n\n (Or maybe I'm just dumb since I only know about 3000 five letter words. Blame Dylan for that.)");
                         }
                     }
                 }
