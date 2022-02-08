@@ -28,8 +28,11 @@ let runningGames = {};
 
 // Schedule daily cleaning using cron
 // 0 0 9 * * * means 9:00 AM exactly
-const cleanJob = new cron.CronJob('0 0 9 * * *', () => {
+const cleanJob = new cron.CronJob('0 0 6 * * *', () => {
     console.log("Cleaning");
+    for (const game in runningGames) {
+        client.channels.cache.get(game).send(`I reset all games at 6 AM PST to avoid memory problems. The word of this game I'm cleaning up was ${runningGames[game].hotWord}.`);
+    }
     runningGames = {};
 
 }, null, true, 'America/Los_Angeles');
@@ -42,12 +45,12 @@ client.on("ready", () => {
     console.log(`Logged in as ${client.user.tag}!`)
 })
 
-client.on("message", msg => {
+client.on("messageCreate", msg => {
     // check if message is from waifu bot
-    if (msg.content === "!wordle") {
+    if (msg.content === "!wordle" || msg.content === "!discordle") {
         let [channelID, _] = GetMessageIDs(msg);
         if (runningGames.hasOwnProperty(channelID)) {
-            msg.channel.send("There's already a Wordle game started.");
+            msg.channel.send("There's already a Discordle game started.");
         } else {
             // generate a random word
             let hotWord = generateHotWord();
@@ -55,7 +58,7 @@ client.on("message", msg => {
             // Save the channel ID as the key with values {guesses: number, hotword: string}
             runningGames[channelID] = { guesses: 0, hotWord: hotWord, letters: makeLetterObject() };
             console.log(runningGames);
-            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place. If neither, then it's an incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.`)
+            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place. If neither, then it's an incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.\nDiscordle games are cleaned up every morning at 6:00 AM PST to avoid memory problems.`)
         }
     } else if (!msg.author.bot && msg.content.toLowerCase().includes("!guess")) {
         // Check to see if game is in session
@@ -107,6 +110,8 @@ client.on("message", msg => {
                     }
                 }
             }
+        } else {
+            msg.channel.send("There isn't currently a game in progress. Try `!wordle` or `!discordle` to start another one.");
         }
     } else if (msg.content === "!giveup") {
         let [channelID, _] = GetMessageIDs(msg);
