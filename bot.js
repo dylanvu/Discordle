@@ -3,7 +3,7 @@ import Discord from "discord.js"
 import express from 'express'
 import cron from 'cron'
 import { GetMessageIDs } from './util/discord.js';
-import { formatGuess, generateHotWord, checkIfvalid } from './util/wordle.js'
+import { formatGuess, generateHotWord, checkIfvalid, makeLetterObject } from './util/wordle.js'
 
 dotenv.config();
 
@@ -53,7 +53,7 @@ client.on("message", msg => {
             let hotWord = generateHotWord();
             console.log(hotWord)
             // Save the channel ID as the key with values {guesses: number, hotword: string}
-            runningGames[channelID] = { guesses: 0, hotWord: hotWord };
+            runningGames[channelID] = { guesses: 0, hotWord: hotWord, letters: makeLetterObject() };
             console.log(runningGames);
             msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place. If neither, then it's an incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.`)
         }
@@ -75,8 +75,24 @@ client.on("message", msg => {
                         } else {
                             // increment guesses by 1
                             runningGames[channelID].guesses = runningGames[channelID].guesses + 1;
-                            const result = formatGuess(guess, channelHotWord);
-                            msg.channel.send(result + `\n\nThere are ${totalGuesses - runningGames[channelID].guesses} guesses left.`);
+                            const result = formatGuess(guess, channelHotWord, runningGames[channelID].letters);
+                            let letterList = "";
+                            for (const letter in result.letters) {
+                                if (result.letters[letter] === "[]") {
+                                    // Right position
+                                    letterList += ` **[${letter}]** `;
+                                } else if (result.letters[letter] === "()") {
+                                    // diff position
+                                    letterList += ` **(${letter})** `;
+                                } else if (result.letters[letter] === "~") {
+                                    // wrong letter
+                                    letterList += ` ~~${letter}~~ `;
+                                } else {
+                                    // not guessed yet
+                                    letterList += ` ${letter} `
+                                }
+                            }
+                            msg.channel.send(result.formatted + `\n\nLetter list: ${letterList}\n\nThere are ${totalGuesses - runningGames[channelID].guesses} guesses left.`);
                             if (runningGames[channelID].guesses >= totalGuesses) {
                                 msg.channel.send(`There are no guesses left. The word was: ${channelHotWord}. If this was a hard word, blame Dylan for his word bank he stole off the internet.`);
                                 delete runningGames[channelID];

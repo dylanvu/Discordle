@@ -10,7 +10,7 @@ import chalk from 'chalk'
     @return a string with color codes that is formatted for Godot
 
 */
-export function formatGuess(inputWord, hotWord) {
+export function formatGuess(inputWord, hotWord, letters) {
     // if (inputWord.includes("[center]")) {
     //     inputWord = inputWord.replace("[center]", "");
     //     inputWord = inputWord.replace("[/center]", "");
@@ -30,6 +30,7 @@ export function formatGuess(inputWord, hotWord) {
             discordArr[i] = color(hotWord.at(i), "green");
             hotArry[i] = "";
             inputArr[i] = "";
+            letters[hotWord.at(i)] = "[]";
         }
     }
 
@@ -41,15 +42,23 @@ export function formatGuess(inputWord, hotWord) {
                 correctArr[i] = chalk.yellow(inputArr[i]);
                 discordArr[i] = color(inputArr[i], "yellow");
                 hotArry[hotArry.indexOf(inputArr[i])] = "";
+                if (letters[inputArr[i]] !== "[]") {
+                    letters[inputArr[i]] = "()";
+                }
             } else {
                 correctArr[i] = chalk.red(inputArr[i]);
                 discordArr[i] = color(inputArr[i], "red");
+                if (letters[inputArr[i]] === "") {
+                    letters[inputArr[i]] = "~";
+                }
             }
         }
     }
 
     console.log("The player has guessed: ", correctArr.join(''));
-    return discordArr.join('');
+    return {
+        formatted: discordArr.join(''), letters: letters
+    };
 }
 
 function color(letter, color) {
@@ -89,4 +98,14 @@ export function generateHotWord() {
 export function randomInt(min, max) {
     // min and max inclusive
     return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+
+export const makeLetterObject = () => {
+    let letterObj = {}
+    letters.forEach(letter => {
+        letterObj[letter] = ""
+    });
+    return letterObj;
 }
