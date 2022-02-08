@@ -58,7 +58,7 @@ function color(letter, color) {
     } else if (color === "yellow") {
         return ` (${letter}) `;
     } else {
-        return ` |${letter}| `
+        return ` ${letter} `
     }
 }
 

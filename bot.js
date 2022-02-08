@@ -55,7 +55,7 @@ client.on("message", msg => {
             // Save the channel ID as the key with values {guesses: number, hotword: string}
             runningGames[channelID] = { guesses: 0, hotWord: hotWord };
             console.log(runningGames);
-            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.`)
+            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place. If neither, then it's an incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.`)
         }
     } else if (!msg.author.bot && msg.content.toLowerCase().includes("!guess")) {
         // Check to see if game is in session
@@ -65,7 +65,9 @@ client.on("message", msg => {
             if (guessArray.length > 1) {
                 const guess = guessArray[1];
                 if (guess) {
-                    if (checkIfvalid(guess)) {
+                    if (guess === "DYLAN") {
+                        msg.channel.send(`:tada: You guessed the creator! The repo is: <https://github.com/vu-dylan/Discordle> :tada:`);
+                    } else if (checkIfvalid(guess)) {
                         const channelHotWord = runningGames[channelID].hotWord;
                         if (guess === channelHotWord) {
                             msg.channel.send(`:tada: You guessed the word! The word was: ${channelHotWord} :tada:`);
@@ -76,7 +78,7 @@ client.on("message", msg => {
                             const result = formatGuess(guess, channelHotWord);
                             msg.channel.send(result + `\n\nThere are ${totalGuesses - runningGames[channelID].guesses} guesses left.`);
                             if (runningGames[channelID].guesses >= totalGuesses) {
-                                msg.channel.send(`There are no guesses left. The word was: ${channelHotWord}.`);
+                                msg.channel.send(`There are no guesses left. The word was: ${channelHotWord}. If this was a hard word, blame Dylan for his word bank he stole off the internet.`);
                                 delete runningGames[channelID];
                             }
                         }
