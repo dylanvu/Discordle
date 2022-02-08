@@ -1,0 +1,27 @@
+{
+  "name": "discordle",
+  "version": "1.0.0",
+  "description": "A Wordle Discord Bot.",
+  "main": "bot",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vu-dylan/Discordle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vu-dylan/Discordle/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/vu-dylan/Discordle#readme",
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.2"
+  }
+}
