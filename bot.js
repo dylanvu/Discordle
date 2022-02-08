@@ -95,7 +95,7 @@ client.on("message", msg => {
     } else if (msg.content === "!giveup") {
         let [channelID, _] = GetMessageIDs(msg);
         if (runningGames.hasOwnProperty(channelID)) {
-            msg.channel.send(`The word was: ${runningGames[channelID].hotWord}.`);
+            msg.channel.send(`The word was: ${runningGames[channelID].hotWord}. If this was a hard word, blame Dylan for his word bank he stole off the internet.`);
             delete runningGames[channelID];
         }
     }
