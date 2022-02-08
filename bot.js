@@ -55,7 +55,7 @@ client.on("message", msg => {
             // Save the channel ID as the key with values {guesses: number, hotword: string}
             runningGames[channelID] = { guesses: 0, hotWord: hotWord };
             console.log(runningGames);
-            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \n Use !guess (yourGuess) to guess. \nUse !giveup to give up.`)
+            msg.channel.send(`It's Disordle time! There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place, |A| = Incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.`)
         }
     } else if (!msg.author.bot && msg.content.toLowerCase().includes("!guess")) {
         // Check to see if game is in session
