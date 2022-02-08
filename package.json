@@ -16,6 +16,11 @@
   "bugs": {
     "url": "https://github.com/vu-dylan/Discordle/issues"
   },
+  {
+    "engines": {
+      "node": ">=0.16"
+    }
+  }
   "type": "module",
   "homepage": "https://github.com/vu-dylan/Discordle#readme",
   "dependencies": {
