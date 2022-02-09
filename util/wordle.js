@@ -71,6 +71,38 @@ function color(letter, color) {
     }
 }
 
+export function formatHistory(history, guesses, total) {
+    const formattedHistoryArray = history.map((guess) => { return makeEmojiRow(guess) });
+    return `Discordle ${guesses}/${total}\n\n` + formattedHistoryArray.join("");
+}
+
+function makeEmojiRow(result) {
+    const splitted = result.split(" ").filter((letter) => {
+        if (letter != "") {
+            return letter
+        }
+    });
+
+    const emojis = splitted.map((letter) => {
+        if (letter.includes("[")) {
+            return ":green_square:";
+        } else if (letter.includes("(")) {
+            return ":yellow_square:";
+        } else {
+            return ":black_large_square:";
+        }
+    })
+    return emojis.join("") + "\n";
+}
+
+export function greenEmojis(number) {
+    let row = ""
+    for (let i = 0; i < number; i++) {
+        row += ":green_square:";
+    }
+    return row
+}
+
 
 /* Retrieve all words from the json file and returns an array of 5 letter capital letters strings
     @return array of strings that are all 5 letters long
