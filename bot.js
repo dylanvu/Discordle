@@ -3,7 +3,7 @@ import Discord from "discord.js"
 import express from 'express'
 import cron from 'cron'
 import { GetMessageIDs } from './util/discord.js';
-import { formatGuess, generateHotWord, checkIfvalid, makeLetterObject, formatHistory, greenEmojis, getGuessSet } from './util/wordle.js'
+import { formatGuess, generateHotWord, generateExtremeHotWord, checkIfvalid, makeLetterObject, formatHistory, greenEmojis, getGuessSet } from './util/wordle.js'
 
 dotenv.config();
 
@@ -125,6 +125,19 @@ client.on("messageCreate", msg => {
             msg.channel.send(`The word was: ${runningGames[channelID].hotWord}. If this was a hard word, blame Dylan for his word bank he stole off the internet.`);
             msg.channel.send("Discordle \n\n:regional_indicator_l::regional_indicator_o::regional_indicator_s::regional_indicator_e::regional_indicator_r:");
             delete runningGames[channelID];
+        }
+    } else if (msg.content.toLowerCase() === "!wordle extreme" || msg.content.toLowerCase() === "!discordle extreme") {
+        let [channelID, _] = GetMessageIDs(msg);
+        if (runningGames.hasOwnProperty(channelID)) {
+            msg.channel.send("There's already a Discordle game started.");
+        } else {
+            // generate a random word
+            let hotWord = generateExtremeHotWord();
+            console.log(hotWord)
+            // Save the channel ID as the key with values {guesses: number, hotword: string}
+            runningGames[channelID] = { guesses: 0, hotWord: hotWord, letters: makeLetterObject(), history: [] };
+            console.log(runningGames);
+            msg.channel.send(`It's Disordle EXTREME time! You're gonna get one of 10,000 possible words. There are ${totalGuesses} guesses. \nHere's the clues: [A] = Right letter right place, (A) = Right letter wrong place. If neither, then it's an incorrect letter. \nUse !guess (yourGuess) to guess. \nUse !giveup to give up.\nDiscordle games are cleaned up every morning at 6:00 AM PST to avoid memory problems.`)
         }
     }
 })

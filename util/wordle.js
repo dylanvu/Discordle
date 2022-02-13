@@ -135,6 +135,12 @@ export function generateHotWord() {
     return validWordList[randomInt(0, validWordList.length)];
 }
 
+export function generateExtremeHotWord() {
+    // 10,0000 possible words
+    const validWordList = retrieveValidWordList('/guesses.json');
+    return validWordList[randomInt(0, validWordList.length)];
+}
+
 export function randomInt(min, max) {
     // min and max inclusive
     return Math.floor(Math.random() * (max - min + 1) + min)
