@@ -111,7 +111,7 @@ client.on("messageCreate", msg => {
                         if (guess.length !== 5) {
                             msg.channel.send("Your guess isn't five letters, my friend.");
                         } else {
-                            msg.channel.send("I couldn't recognize that word. Are you sure that's a real word? \n\n (Or maybe I'm just dumb since I only know about 3000 five letter words. Blame Dylan for that.)");
+                            msg.channel.send("I couldn't recognize that word. Are you sure that's a real word? \n\n I'm pretty smart now and know about 10,000 valid guesses, so odds are it doesn't exist.");
                         }
                     }
                 }
