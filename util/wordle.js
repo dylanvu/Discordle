@@ -108,22 +108,30 @@ export function greenEmojis(number) {
     @return array of strings that are all 5 letters long
 */
 
-export function checkIfvalid(word) {
-    const validWordList = retrieveValidWordList();
-    return validWordList.includes(word.toUpperCase());
+export function checkIfvalid(word, guessSet) {
+    // const validWordList = retrieveValidWordList();
+    // return validWordList.includes(word.toUpperCase());
+    return guessSet.has(word);
 }
 
-export function retrieveValidWordList() {
+export function retrieveValidWordList(jsonFile) {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
 
-    const fileName = __dirname + '/targets.json' // wordlist from https://github.com/lynn/hello-wordl
-    const allWords = JSON.parse(fs.readFileSync(fileName));
+    const fileName = __dirname + jsonFile;
+    // guess list: https://gist.github.com/cfreshman/cdcdf777450c5b5301e439061d29694c
+    // answer list: https://gist.github.com/cfreshman/a03ef2cba789d8cf00c08f767e0fad7b
+    const allWords = JSON.parse(fs.readFileSync(fileName, { encoding: 'utf8' })); // JSONs are in utf16 LE
     return allWords.filter(word => word.length === 5 && /^[a-zA-Z]+$/.test(word)).map((word) => word.toUpperCase());
 }
 
+export function getGuessSet() {
+    const wordList = retrieveValidWordList('/guesses.json');
+    return new Set(wordList);
+}
+
 export function generateHotWord() {
-    const validWordList = retrieveValidWordList();
+    const validWordList = retrieveValidWordList('/answers.json');
     return validWordList[randomInt(0, validWordList.length)];
 }
 

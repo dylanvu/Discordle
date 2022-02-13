@@ -3,7 +3,7 @@ import Discord from "discord.js"
 import express from 'express'
 import cron from 'cron'
 import { GetMessageIDs } from './util/discord.js';
-import { formatGuess, generateHotWord, checkIfvalid, makeLetterObject, formatHistory, greenEmojis } from './util/wordle.js'
+import { formatGuess, generateHotWord, checkIfvalid, makeLetterObject, formatHistory, greenEmojis, getGuessSet } from './util/wordle.js'
 
 dotenv.config();
 
@@ -23,6 +23,8 @@ const client = new Discord.Client({
     ],
 });
 const BOT_TOKEN = process.env.BOT_TOKEN;
+
+const guessSet = getGuessSet();
 
 let runningGames = {};
 
@@ -70,7 +72,7 @@ client.on("messageCreate", msg => {
                 if (guess) {
                     if (guess === "DYLAN") {
                         msg.channel.send(`:tada: You guessed the creator! The repo is: <https://github.com/vu-dylan/Discordle> :tada:`);
-                    } else if (checkIfvalid(guess)) {
+                    } else if (checkIfvalid(guess, guessSet)) {
                         const channelHotWord = runningGames[channelID].hotWord;
                         if (guess === channelHotWord) {
                             msg.channel.send(`:tada: You guessed the word! The word was: ${channelHotWord} :tada:`);
