@@ -6,3 +6,5 @@ I wrote this in like 1 hour using code I wrote for SB Hacks VIII as a break from
 https://discord.com/api/oauth2/authorize?client_id=940497349657104384&permissions=67584&scope=bot
 
 Use `!wordle` or `!discordle` to play.
+
+Use `!wordle EXTREME` or `!discordle EXTREME` to play with potentially difficult words.
