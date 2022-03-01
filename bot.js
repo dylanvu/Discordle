@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import Discord from "discord.js"
 import express from 'express'
 import cron from 'cron'
+import mongo from 'mongodb'
 import { GetMessageIDs } from './util/discord.js';
 import { formatGuess, generateHotWord, generateExtremeHotWord, checkIfvalid, makeLetterObject, formatHistory, greenEmojis, getGuessSet } from './util/wordle.js'
 
@@ -12,6 +13,19 @@ const PORT = 3000;
 
 APP.get('/', (req, res) => res.send('Hello World!'));
 APP.listen(PORT, () => console.log(`Discord QOTD app listening at http://localhost:${PORT}`));
+
+const mongoclient = new mongo.MongoClient(process.env.MONGO_DB_CONNECTION, { useUnifiedTopology: true, useNewUrlParser: true });
+
+// Connect to MongoDB, you only have to do this once at the beginning
+const MongoConnect = async () => {
+    try {
+        await mongoclient.connect()
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+MongoConnect();
 
 const client = new Discord.Client({
     intents: [
@@ -141,5 +155,13 @@ client.on("messageCreate", msg => {
         }
     }
 })
+
+// 429 is a rate limit
+client.on('debug', function (debug) {
+    console.log(debug);
+    if (debug.includes("429")) { // 429 is a rate limit, kill replit if it is rate limited
+        exec("kill 1");
+    }
+});
 
 client.login(BOT_TOKEN);
